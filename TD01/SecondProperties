@@ -1,0 +1,6 @@
+main=false
+gui=false
+container-name = tdtp
+host = 172.22.62.5
+port = 10022
+local-port=10022
