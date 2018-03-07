@@ -1,0 +1,7 @@
+import jade.core.behaviours.CyclicBehaviour;
+
+public class FactBehaviour extends CyclicBehaviour {
+	public void action(){
+		//Organise le calcul d’une factorielle
+	}
+}

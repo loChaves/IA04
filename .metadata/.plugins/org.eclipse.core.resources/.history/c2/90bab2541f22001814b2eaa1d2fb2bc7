@@ -1,0 +1,11 @@
+import jade.core.Agent;
+
+public class FactAgent extends Agent {
+	protected void setup() {
+		System.out.println(getLocalName() + " : " + getAID() + "--> Installed");
+		Object[] args = getArguments();
+		String op = (String) args[0];
+		addBehaviour(new Fact(this, op));
+		addBehaviour(new Mult(this, op));
+	}
+}

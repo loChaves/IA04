@@ -1,0 +1,46 @@
+import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.lang.acl.ACLMessage;
+
+public class FactMult extends Agent {
+	protected void setup(){
+		System.out.println(getName() + "--> Installed");
+
+		Object[] args = getArguments();
+		String op = (String) args[0];
+		addBehaviour(new MultBehaviour(op));
+	}
+
+	//Effectue un produit
+	public class MultBehaviour extends CyclicBehaviour{
+		final String op;
+		public MultBehaviour(String _op){
+			op = _op;
+		}
+		
+		public void action(){
+			ACLMessage message = receive();
+			
+			if (message != null) {
+				
+				String par = message.getContent();
+				ACLMessage reply = message.createReply();
+				
+				if (par.contains(op)) {
+					String[] parameters = par.split(op);
+					int n = Integer.parseInt(parameters[0].trim()) * Integer.parseInt(parameters[1].trim());
+					reply.setPerformative(ACLMessage.INFORM);
+					reply.setContent(String.valueOf(n));
+				}
+				else {
+					reply.setPerformative(ACLMessage.FAILURE);
+					reply.setContent("Unknown operator!");
+				}
+				send(reply);
+			}
+			else{
+				block();
+			}
+		}
+	}
+}

@@ -1,0 +1,23 @@
+import jade.core.Agent;
+import jade.core.behaviours.OneShotBehaviour;
+import jade.lang.acl.ACLMessage;
+
+public class FactMult extends Agent {
+	protected void setup(){
+		System.out.println(getName() + "--> Installed");
+
+		addBehaviour(new MultBehaviour());
+	}
+
+	//Effectue un produit
+	public class MultBehaviour extends OneShotBehaviour{
+		public void action(){
+			ACLMessage message = receive();
+			if (message != null) {
+				
+			}
+			else
+				block();
+		}
+	}
+}

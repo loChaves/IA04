@@ -1,0 +1,68 @@
+import jade.core.AID;
+import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
+import jade.lang.acl.ACLMessage;
+
+public class FactAgent extends Agent {
+	protected void setup() {
+		System.out.println(getName() + "--> Installed");
+
+		addBehaviour(new FactBehaviour());
+	}
+	
+	//Organise le calcul d’une factorielle
+	public class FactBehaviour extends CyclicBehaviour {
+		int n;
+		double ans;
+		
+		public void action(){
+			ACLMessage rqtFact = new ACLMessage(ACLMessage.REQUEST);
+			rqtFact.addReceiver(new AID("MULT", AID.ISLOCALNAME));
+			
+			ACLMessage message = receive();
+			if(message != null){
+				if(message.getPerformative() == ACLMessage.INFORM){
+					ans = Integer.parseInt(message.getContent());
+					
+					if(n == 1){
+						System.out.println(getName() + " : Factorial = " + ans);
+					}
+					else{
+						rqtFact.setContent(String.valueOf(n) + " x " + String.valueOf(ans));
+						send(rqtFact);
+						
+						n--;
+					}
+				}
+				else{				
+					String par = message.getContent();
+					
+					if (par.contains("!")) {
+						String[] parameters = par.split("!");
+						n = Integer.parseInt(parameters[0].trim());
+						ans = 1;
+						
+						if(n < 0){
+							System.out.println(getName() + " : Error! Please enter a positive value.");
+						}
+						else if(n > 1){
+							rqtFact.setContent(String.valueOf(n) + " x " + String.valueOf(n-1));
+							n = n-2;
+							send(rqtFact);
+						}
+						else
+							System.out.println(getName() + " : Factorial = 1");
+					}
+					else {
+						System.out.println(getName() + " : Error! Unkwon request.");
+						block();
+					}
+				}
+			}
+			else{
+				block();
+			}
+		}
+	}
+}

@@ -1,0 +1,14 @@
+import jade.core.behaviours.OneShotBehaviour;
+import jade.lang.acl.ACLMessage;
+
+public class MultBehaviour extends OneShotBehaviour{
+	public void action(){
+		//Effectue un produit
+		ACLMessage message = receive();
+		if (message != null) {
+			// instructions
+		}
+		else
+			block();
+	}
+}

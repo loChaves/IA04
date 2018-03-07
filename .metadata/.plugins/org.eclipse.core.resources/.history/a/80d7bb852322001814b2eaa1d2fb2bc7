@@ -1,0 +1,19 @@
+import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
+import jade.lang.acl.ACLMessage;
+
+public class FactAgent extends Agent {
+	protected void setup() {
+		System.out.println(getAID().getName() + "--> Installed");
+
+		addBehaviour(new FactBehaviour());
+	}
+	
+	//Organise le calcul d’une factorielle
+	public class FactBehaviour extends CyclicBehaviour {
+		public void action(){
+			
+		}
+	}
+}
