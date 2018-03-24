@@ -5,7 +5,16 @@
 <fullyQualifiedTypeName name="jade.core.behaviours.OneShotBehaviour"/>
 <fullyQualifiedTypeName name="jade.lang.acl.ACLMessage"/>
 <fullyQualifiedTypeName name="jade.wrapper.AgentController"/>
-<fullyQualifiedTypeName name="jade.core.AID"/>
-<fullyQualifiedTypeName name="jade.core.behaviours.CyclicBehaviour"/>
 <fullyQualifiedTypeName name="com.fasterxml.jackson.databind.ObjectMapper"/>
+<fullyQualifiedTypeName name="jade.core.behaviours.SequentialBehaviour"/>
+<fullyQualifiedTypeName name="jade.core.AID"/>
+<fullyQualifiedTypeName name="jade.core.behaviours.Behaviour"/>
+<fullyQualifiedTypeName name="jade.core.behaviours.CyclicBehaviour"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.io.FileReader"/>
+<fullyQualifiedTypeName name="java.io.FileInputStream"/>
+<fullyQualifiedTypeName name="sun.misc.IOUtils"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.awt.List"/>
+<fullyQualifiedTypeName name="java.util.List"/>
 </qualifiedTypeNameHistroy>
