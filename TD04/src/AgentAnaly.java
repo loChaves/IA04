@@ -38,10 +38,6 @@ public class AgentAnaly extends Agent{
 				try {
 					msg = mapper.readValue(message.getContent(), Message.class);
 					  
-				    String tst = new String();
-				    for(Cellule d : msg.getList())
-				    	tst += d.getValeur() + " ";
-				    System.out.println(tst);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
