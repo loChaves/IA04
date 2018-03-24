@@ -30,7 +30,6 @@ public class Sudoku {
 		for(int j = 0; j < 9; j++){
 			col.add(cells.get(i + j*9));
 		}
-		
 		return col;
 	}
 	
@@ -73,5 +72,14 @@ public class Sudoku {
 		}catch(IndexOutOfBoundsException e){
 			System.out.println("Erreur de setSudoku(), List<Integer> sud n'a pas une bonne taille.");
 		}
+	}
+	
+	public boolean isDone() {
+		boolean is = true;
+		for(Cellule c : cells) {
+			if(c.getValeur() == 0)
+				is = false;
+		}
+		return is;
 	}
 }

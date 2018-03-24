@@ -22,36 +22,50 @@ public class AgentEnvi extends Agent{
 	
 	private class BehaviourCompte extends CyclicBehaviour{		
 		public void action(){
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-			ACLMessage message = receive(mt);
 			
-			ACLMessage rqtEnvi = new ACLMessage(ACLMessage.REQUEST);
-			
-			if(message != null){
-				try {
-					msg = mapper.readValue(message.getContent(), Message.class);
-					
-					//rqtEnvi.addReceiver(new AID(msg.getObjet(), AID.ISLOCALNAME));
-					
-					int c = compteur%27;
-					
+			if(!s.isDone()) {
+				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+				ACLMessage message = receive(mt);
+				
+				ACLMessage rqtEnvi = new ACLMessage(ACLMessage.REQUEST);
+				
+				if(message != null){
+					try {
+						msg = mapper.readValue(message.getContent(), Message.class);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+						
+					rqtEnvi.addReceiver(new AID(msg.getObjet(), AID.ISLOCALNAME));
+							
+					int c = compteur%26;
+							
 					if(c >= 0 && c <= 8){
 						msg = new Message("analyse", s.getLigne(c));
-					}else if(c >= 8 && c <= 17){
+					}else if(c >= 8 && c <= 16){
 						msg = new Message("analyse", s.getColonne(c-8));
-					}else if(c >= 18 && c <= 26){
-						msg = new Message("analyse", s.getCarre(c-18));
+					}else if(c >= 17 && c <= 25){
+						msg = new Message("analyse", s.getCarre(c-17));
 					}
-					
-					System.out.println("Compteur : " + compteur);
-					System.out.println(message.getContent() + " : " + msg.getObjet());
-					rqtEnvi.setContent(mapper.writeValueAsString(msg));
-					//send(rqtEnvi);
-					compteur++;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+							
+					//System.out.println("Compteur : " + compteur);
+					//System.out.println(message.getContent() + " : " + msg.getObjet());
+					try {
+						rqtEnvi.setContent(mapper.writeValueAsString(msg));
+						send(rqtEnvi);
+						compteur++;
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+			} else {
+				System.out.println("Sudoku is done.");
+				ACLMessage infEnvi = new ACLMessage(ACLMessage.INFORM);
+				infEnvi.addReceiver(new AID("SIMULATION", AID.ISLOCALNAME));
+				infEnvi.setContent(new Integer(compteur).toString());
+				send(infEnvi);
 			}
 		}
 	}

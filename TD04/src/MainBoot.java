@@ -20,6 +20,12 @@ public class MainBoot {
 			AgentController envi = mc.createNewAgent("ENVIRONEMENT", "AgentEnvi", null);
 			envi.start();
 			
+			AgentController analy;
+			for(int i = 0; i < 3; i++) {
+				analy = mc.createNewAgent("ANALYSE"+i, "AgentAnaly", null);
+				analy.start();
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

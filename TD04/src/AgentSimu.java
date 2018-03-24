@@ -13,7 +13,7 @@ import jade.lang.acl.MessageTemplate;
 
 public class AgentSimu extends Agent {
 	boolean fin = false;
-	long time = 100;
+	long time = 1000;
 	List<String> agentsAnalyse = new ArrayList<String>();
 	ObjectMapper mapper = new ObjectMapper();
 
@@ -38,8 +38,7 @@ public class AgentSimu extends Agent {
 			message = receive(mt);
 			
 			if(message != null) {
-				System.out.println(getName() + " : Sudoku reussi.");
-				System.out.println(message.getContent());
+				System.out.println(getName() + " : Sudoku reussi avec compteur = " + message.getContent() + ".");
 				
 				fin = true;
 			}
@@ -54,8 +53,8 @@ public class AgentSimu extends Agent {
 		public void onTick() {
 			if(!fin){
 				ACLMessage rqtSimu = new ACLMessage(ACLMessage.REQUEST);
-				Message msg = new Message("replyto", "");
-	
+				Message msg = new Message("reply-to", "");
+				
 				for (String nom : agentsAnalyse) {
 					rqtSimu.addReceiver(new AID("ENVIRONEMENT", AID.ISLOCALNAME));
 	
