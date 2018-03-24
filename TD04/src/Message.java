@@ -23,12 +23,19 @@ public class Message {
 	public String getCommand(){
 		return command;
 	}
+	
 	public String getObjet(){
 		return objet;
 	}
+	
+	public List<Cellule> getList(){
+		return lc;
+	}
+	
 	public void setCommand(String cmd){
 		command = cmd;
 	}
+	
 	public void setObjet(String obj){
 		objet = obj;
 	}

@@ -1,4 +1,10 @@
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,6 +24,24 @@ public class AgentEnvi extends Agent{
 		System.out.println(getName() + "--> Installed");
 
 		addBehaviour(new BehaviourCompte());
+		
+		try(BufferedReader br = new BufferedReader(new FileReader("sudoku.txt"))) {
+		    String line = br.readLine();
+		    List<Integer> sud = new ArrayList<Integer>();
+		    
+		    while (line != null) {
+		    	String[] str = line.split(" ");
+		    	for(String num : str)
+		    		sud.add(Integer.parseInt(num));
+		    	
+		        line = br.readLine();
+		    }
+		    
+		    s.setSudoku(sud);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private class BehaviourCompte extends CyclicBehaviour{		
@@ -38,21 +62,20 @@ public class AgentEnvi extends Agent{
 					}
 						
 					rqtEnvi.addReceiver(new AID(msg.getObjet(), AID.ISLOCALNAME));
-							
+					
 					int c = compteur%26;
-							
 					if(c >= 0 && c <= 8){
 						msg = new Message("analyse", s.getLigne(c));
 					}else if(c >= 8 && c <= 16){
 						msg = new Message("analyse", s.getColonne(c-8));
 					}else if(c >= 17 && c <= 25){
 						msg = new Message("analyse", s.getCarre(c-17));
-					}
-							
-					//System.out.println("Compteur : " + compteur);
-					//System.out.println(message.getContent() + " : " + msg.getObjet());
+					}else
+						msg = new Message();
+				    
 					try {
 						rqtEnvi.setContent(mapper.writeValueAsString(msg));
+						System.out.println(rqtEnvi.getContent());
 						send(rqtEnvi);
 						compteur++;
 					} catch (IOException e) {
@@ -61,10 +84,10 @@ public class AgentEnvi extends Agent{
 					}
 				}
 			} else {
-				System.out.println("Sudoku is done.");
+				System.out.println(compteur);
 				ACLMessage infEnvi = new ACLMessage(ACLMessage.INFORM);
 				infEnvi.addReceiver(new AID("SIMULATION", AID.ISLOCALNAME));
-				infEnvi.setContent(new Integer(compteur).toString());
+				infEnvi.setContent(s.printSudoku());
 				send(infEnvi);
 			}
 		}

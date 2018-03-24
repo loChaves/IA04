@@ -38,7 +38,8 @@ public class AgentSimu extends Agent {
 			message = receive(mt);
 			
 			if(message != null) {
-				System.out.println(getName() + " : Sudoku reussi avec compteur = " + message.getContent() + ".");
+				System.out.println(getName() + " : Sudoku reussi.");
+				System.out.println(message.getContent());
 				
 				fin = true;
 			}

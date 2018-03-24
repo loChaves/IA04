@@ -13,7 +13,11 @@ public class Cellule{
 	public void setValeur(int val) throws Exception{
 		if(val >= 0 && val <= 9){
 			valeur = val;
-			possibles.remove(val);
+			possibles.clear();
+			if(val == 0) {
+				for(int i = 1; i <= 9; i++)
+					possibles.add(i);
+			}
 		}else{
 			throw new Exception("Erreur, valeur illegal pour une cellule.");
 		}
