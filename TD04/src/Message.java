@@ -6,6 +6,10 @@ public class Message {
 	private String objet = "";
 	private List<Cellule> lc = new ArrayList<Cellule>();
 	
+	public Message() {
+		
+	}
+	
 	public Message(String cmd, String obj){
 		command = cmd;
 		objet = obj;

@@ -62,8 +62,8 @@ public class AgentSimu extends Agent {
 					msg.setObjet(nom);
 					try {
 						rqtSimu.setContent(mapper.writeValueAsString(msg));
-						System.out.println(getName() + " : reply-to : " + nom);
-						//send(rqtSimu);
+						//System.out.println(getName() + " : reply-to : " + nom);
+						send(rqtSimu);
 					} catch (JsonProcessingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -39,21 +39,21 @@ public class Sudoku {
 		
 		if(i < 3 && i >= 0){
 			for(int j = 0; j < 3; j++){
-				car.add(cells.get(j));
-				car.add(cells.get(j+9));
-				car.add(cells.get(j+18));
+				car.add(cells.get(i*3 + j));
+				car.add(cells.get(i*3 + j+9));
+				car.add(cells.get(i*3 + j+18));
 			}
 		}else if(i < 6 && i >= 3){
 			for(int j = 0; j < 3; j++){
-				car.add(cells.get(27+j));
-				car.add(cells.get(27+j+9));
-				car.add(cells.get(27+j+18));
+				car.add(cells.get((i%3)*3 + 27+j));
+				car.add(cells.get((i%3)*3 + 27+j+9));
+				car.add(cells.get((i%3)*3 + 27+j+18));
 			}
 		}else if(i < 9 && i >= 6){
 			for(int j = 0; j < 3; j++){
-				car.add(cells.get(54+j));
-				car.add(cells.get(54+j+9));
-				car.add(cells.get(54+j+18));
+				car.add(cells.get((i%3)*3 + 54+j));
+				car.add(cells.get((i%3)*3 + 54+j+9));
+				car.add(cells.get((i%3)*3 + 54+j+18));
 			}
 		}
 		return car;

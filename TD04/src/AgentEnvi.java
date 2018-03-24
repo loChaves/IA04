@@ -31,7 +31,7 @@ public class AgentEnvi extends Agent{
 				try {
 					msg = mapper.readValue(message.getContent(), Message.class);
 					
-					rqtEnvi.addReceiver(new AID(msg.getObjet(), AID.ISLOCALNAME));
+					//rqtEnvi.addReceiver(new AID(msg.getObjet(), AID.ISLOCALNAME));
 					
 					int c = compteur%27;
 					
@@ -43,8 +43,10 @@ public class AgentEnvi extends Agent{
 						msg = new Message("analyse", s.getCarre(c-18));
 					}
 					
+					System.out.println("Compteur : " + compteur);
+					System.out.println(message.getContent() + " : " + msg.getObjet());
 					rqtEnvi.setContent(mapper.writeValueAsString(msg));
-					send(rqtEnvi);
+					//send(rqtEnvi);
 					compteur++;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
