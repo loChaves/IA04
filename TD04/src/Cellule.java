@@ -2,11 +2,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cellule{
+	private int position = 81;
 	private int valeur = 0;
 	private List<Integer> possibles = new ArrayList<Integer>();
 	
-	public Cellule(){
-		for(int i = 1; i <= 9; i++)
+	public Cellule() {
+		for(Integer i = 1; i <= 9; i++)
+			possibles.add(i);
+	}
+	
+	public Cellule(int p){
+		position = p;
+		for(Integer i = 1; i <= 9; i++)
 			possibles.add(i);
 	}
 	
@@ -15,7 +22,7 @@ public class Cellule{
 			valeur = val;
 			possibles.clear();
 			if(val == 0) {
-				for(int i = 1; i <= 9; i++)
+				for(Integer i = 1; i <= 9; i++)
 					possibles.add(i);
 			}
 		}else{
@@ -23,7 +30,7 @@ public class Cellule{
 		}
 	}
 	
-	public void rmPossible(int val){
+	public void rmPossible(Integer val){
 		possibles.remove(val);
 	}
 	
@@ -33,5 +40,13 @@ public class Cellule{
 	
 	public List<Integer> getPossibles(){
 		return possibles;
+	}
+	
+	public void setPossibles(List<Integer> l) {
+		possibles = l;
+	}
+	
+	public int getPosition() {
+		return position;
 	}
 }

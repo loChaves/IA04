@@ -6,8 +6,12 @@ public class Sudoku {
 	
 	public Sudoku(){
 		for(int i = 0; i < 81; i++){
-			cells.add(new Cellule());
+			cells.add(new Cellule(i));
 		}
+	}
+	
+	public void setCellule(int i, Cellule c) {
+		cells.set(i, c);
 	}
 	
 	public Cellule getCellule(int i){
@@ -64,14 +68,15 @@ public class Sudoku {
 	
 	public void setSudoku(List<Integer> sud){
 		try{
-			for(int i = 0; i < 81; i++){
+			for(int i = 0; i < 81; i++)
 				cells.get(i).setValeur(sud.get(i));
-			}
 		}catch(IndexOutOfBoundsException e){
 			System.out.println("Erreur de setSudoku(), List<Integer> sud n'a pas une bonne taille.");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println(printSudoku());
 	}
 	
 	public String printSudoku() {
@@ -101,5 +106,15 @@ public class Sudoku {
 				is = false;
 		}
 		return is;
+	}
+	
+	public int howDone() {
+		int p = 0;
+		for(Cellule c : cells) {
+			if(c.getValeur() != 0)
+				p++;
+		}
+		
+		return Math.round((float)p/(float)cells.size()*100);
 	}
 }

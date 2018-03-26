@@ -54,6 +54,10 @@ public class AgentEnvi extends Agent{
 				ACLMessage rqtEnvi = new ACLMessage(ACLMessage.REQUEST);
 				
 				if(message != null){
+					if(s.howDone() >= 95)
+						System.out.println(s.printSudoku() + System.lineSeparator());
+					//System.out.println(s.getCellule(40).getPossibles());
+					System.out.println(s.howDone() + "%");
 					try {
 						msg = mapper.readValue(message.getContent(), Message.class);
 					} catch (IOException e) {
@@ -75,12 +79,28 @@ public class AgentEnvi extends Agent{
 				    
 					try {
 						rqtEnvi.setContent(mapper.writeValueAsString(msg));
-						System.out.println(rqtEnvi.getContent());
+						//System.out.println(rqtEnvi.getContent());
 						send(rqtEnvi);
 						compteur++;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					}
+				}
+				
+				mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+				message = receive(mt);
+				
+				if(message != null){
+					try {
+						msg = mapper.readValue(message.getContent(), Message.class);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					for(Cellule c : msg.getList()) {
+						s.setCellule(c.getPosition(), c);
 					}
 				}
 			} else {
@@ -89,6 +109,8 @@ public class AgentEnvi extends Agent{
 				infEnvi.addReceiver(new AID("SIMULATION", AID.ISLOCALNAME));
 				infEnvi.setContent(s.printSudoku());
 				send(infEnvi);
+				
+				done();
 			}
 		}
 	}

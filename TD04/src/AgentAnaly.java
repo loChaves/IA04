@@ -1,7 +1,9 @@
 import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jade.core.AID;
@@ -29,17 +31,72 @@ public class AgentAnaly extends Agent{
 		addBehaviour(new BehaviourAnalyse());
 	}
 	
-	private class BehaviourAnalyse extends CyclicBehaviour{		
+	private class BehaviourAnalyse extends CyclicBehaviour{
+		List<Cellule> cells;
+		
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			ACLMessage message = receive(mt);
 			
 			if(message != null){
+				ACLMessage reply = message.createReply();
+				reply.setPerformative(ACLMessage.INFORM);
+				
 				try {
 					msg = mapper.readValue(message.getContent(), Message.class);
-					  
-					
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				cells = msg.getList();
+				for(Cellule c : cells) {
+					//System.out.println(c.getPossibles());
+					if(c.getPossibles().size() == 0) {
+						Integer v = c.getValeur();
+						for(Cellule d : cells)
+							d.rmPossible(v);
+					}else if(c.getPossibles().size() == 1) {
+						Integer v = c.getPossibles().get(0);
+						try {
+							c.setValeur(v);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						for(Cellule d : cells)
+							d.rmPossible(v);
+					}else if(c.getPossibles().size() > 1) {
+						boolean uneSeule;
+						Integer i;
+						Iterator<Integer> it = c.getPossibles().iterator();
+						do {
+							uneSeule = true;
+							i = it.next();
+							for(Cellule d : cells) {
+								if(uneSeule && c.getPosition() != d.getPosition())
+									uneSeule = !d.getPossibles().contains(i);
+							}
+							if(uneSeule)
+								break;
+						}while(it.hasNext() && !uneSeule);
+						
+						if(uneSeule) {
+							try {
+								c.setValeur(i);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				
+				msg = new Message("response", cells);
+				try {
+					reply.setContent(mapper.writeValueAsString(msg));
+					send(reply);
+				} catch (JsonProcessingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
