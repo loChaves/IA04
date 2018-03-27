@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cellule{
+public class Cellule implements Comparable<Cellule>{
 	private int position = 81;
 	private int valeur = 0;
 	private List<Integer> possibles = new ArrayList<Integer>();
@@ -49,4 +49,9 @@ public class Cellule{
 	public int getPosition() {
 		return position;
 	}
+	
+	@Override
+    public int compareTo(Cellule cell2) {
+        return  Integer.compare(this.getPossibles().size(), cell2.getPossibles().size());
+    }
 }

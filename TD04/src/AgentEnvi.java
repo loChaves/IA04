@@ -99,8 +99,15 @@ public class AgentEnvi extends Agent{
 						e.printStackTrace();
 					}
 					
+					boolean changed = false;
 					for(Cellule c : msg.getList()) {
-						s.setCellule(c.getPosition(), c);
+						if(c.getPossibles().size() < s.getCellule(c.getPosition()).getPossibles().size())
+							changed = true;
+					}
+					
+					if(changed) {
+						for(Cellule c : msg.getList())
+							s.setCellule(c.getPosition(), c);
 					}
 				}
 			} else {

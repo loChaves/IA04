@@ -1,6 +1,8 @@
 import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +19,7 @@ import jade.lang.acl.MessageTemplate;
 public class AgentAnaly extends Agent{
 	ObjectMapper mapper = new ObjectMapper();
 	Message msg;
-	List<Cellule> lcc = new ArrayList<Cellule>();
+	List<Cellule> cells = new ArrayList<Cellule>();
 	
 	protected void setup() {
 		System.out.println(getName() + "--> Installed");
@@ -32,7 +34,6 @@ public class AgentAnaly extends Agent{
 	}
 	
 	private class BehaviourAnalyse extends CyclicBehaviour{
-		List<Cellule> cells;
 		
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
@@ -50,8 +51,8 @@ public class AgentAnaly extends Agent{
 				}
 				
 				cells = msg.getList();
+				Collections.sort(cells);
 				for(Cellule c : cells) {
-					//System.out.println(c.getPossibles());
 					if(c.getPossibles().size() == 0) {
 						Integer v = c.getValeur();
 						for(Cellule d : cells)
@@ -67,23 +68,24 @@ public class AgentAnaly extends Agent{
 						for(Cellule d : cells)
 							d.rmPossible(v);
 					}else if(c.getPossibles().size() > 1) {
-						boolean uneSeule;
-						Integer i;
-						Iterator<Integer> it = c.getPossibles().iterator();
-						do {
+						boolean uneSeule = false;
+						Integer n = -1;
+						for(Integer i : c.getPossibles()) {
 							uneSeule = true;
-							i = it.next();
+							n = i;
 							for(Cellule d : cells) {
-								if(uneSeule && c.getPosition() != d.getPosition())
-									uneSeule = !d.getPossibles().contains(i);
+								if(c.getPosition() != d.getPosition()) {
+									if(d.getPossibles().contains(i))
+										uneSeule = false;
+								}
 							}
 							if(uneSeule)
 								break;
-						}while(it.hasNext() && !uneSeule);
+						}
 						
 						if(uneSeule) {
 							try {
-								c.setValeur(i);
+								c.setValeur(n);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
