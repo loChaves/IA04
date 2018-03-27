@@ -54,7 +54,7 @@ public class AgentEnvi extends Agent{
 				ACLMessage rqtEnvi = new ACLMessage(ACLMessage.REQUEST);
 				
 				if(message != null){
-					if(s.howDone() >= 95)
+					if(s.howDone() >= 77)
 						System.out.println(s.printSudoku() + System.lineSeparator());
 					//System.out.println(s.getCellule(40).getPossibles());
 					System.out.println(s.howDone() + "%");

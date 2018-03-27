@@ -13,7 +13,7 @@ import jade.lang.acl.MessageTemplate;
 
 public class AgentSimu extends Agent {
 	boolean fin = false;
-	long time = 1000;
+	long time = 500;
 	List<String> agentsAnalyse = new ArrayList<String>();
 	ObjectMapper mapper = new ObjectMapper();
 

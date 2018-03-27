@@ -91,6 +91,28 @@ public class AgentAnaly extends Agent{
 								e.printStackTrace();
 							}
 						}
+						
+						if(c.getPossibles().size() == 2) {
+							boolean deuxSeule = false;
+							Cellule e = new Cellule();
+							for(Cellule d : cells) {
+								if(c.getPosition() != d.getPosition() && d.getPossibles().size() == 2) {
+									e = d;
+									if(d.getPossibles().contains(c.getPossibles().get(0)) && d.getPossibles().contains(c.getPossibles().get(1)))
+										deuxSeule = true;
+								}
+								if(deuxSeule)
+									break;
+							}
+							if(deuxSeule){
+								for(Cellule d : cells) {
+									if(c.getPosition() != d.getPosition() && e.getPosition() != d.getPosition()) {
+										d.rmPossible(c.getPossibles().get(0));
+										d.rmPossible(c.getPossibles().get(1));
+									}
+								}
+							}
+						}
 					}
 				}
 				
