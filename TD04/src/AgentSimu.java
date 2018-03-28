@@ -6,12 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.ParallelBehaviour;
+import jade.core.behaviours.SequentialBehaviour;
+import jade.core.behaviours.SimpleBehaviour;
 import jade.core.behaviours.TickerBehaviour;
+import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
 public class AgentSimu extends Agent {
+	private static final long serialVersionUID = 1L;
 	boolean fin = false;
 	long time = 500;
 	List<String> agentsAnalyse = new ArrayList<String>();
@@ -20,12 +25,26 @@ public class AgentSimu extends Agent {
 	protected void setup() {
 		System.out.println(getName() + "--> Installed");
 
-		addBehaviour(new BehaviourSubscription());
-		addBehaviour(new BehaviourSimu(this, time));
+		SequentialBehaviour mainBehaviour = new SequentialBehaviour();
+		
+		mainBehaviour.addSubBehaviour(new BehaviourSubscription(this, 1000));
+		
+		ParallelBehaviour parBehaviour = new ParallelBehaviour(ParallelBehaviour.WHEN_ALL);
+		
+		parBehaviour.addSubBehaviour(new BehaviourSimu(this, time));
+		parBehaviour.addSubBehaviour(new BehaviourFin());
+		
+		mainBehaviour.addSubBehaviour(parBehaviour);
+		
+		addBehaviour(mainBehaviour);
 	}
-
-	public class BehaviourSubscription extends CyclicBehaviour {
-		public void action() {
+	
+	public class BehaviourSubscription extends WakerBehaviour {
+		private static final long serialVersionUID = 1L;
+		public BehaviourSubscription(Agent a, long timeout) {
+			super(a, timeout);
+		}
+		public void onWake() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.SUBSCRIBE);
 			ACLMessage message = receive(mt);
 			
@@ -33,20 +52,29 @@ public class AgentSimu extends Agent {
 				agentsAnalyse.add(message.getContent());
 				System.out.println(getName() + " : " + message.getContent() + " added.");
 			}
-			
-			mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-			message = receive(mt);
+		}
+	}
+	
+	public class BehaviourFin extends SimpleBehaviour {
+		private static final long serialVersionUID = 1L;
+		public void action(){
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+			ACLMessage message = receive(mt);
 			
 			if(message != null) {
 				System.out.println(getName() + " : Sudoku reussi.");
 				System.out.println(message.getContent());
-				
 				fin = true;
 			}
+		}
+		
+		public boolean done(){
+			return fin;
 		}
 	}
 
 	public class BehaviourSimu extends TickerBehaviour {
+		private static final long serialVersionUID = 1L;
 		public BehaviourSimu(Agent a, long timeout) {
 			super(a, timeout);
 		}
@@ -70,7 +98,7 @@ public class AgentSimu extends Agent {
 					}
 				}
 			} else
-				done();
+				stop();
 		}
 	}
 }

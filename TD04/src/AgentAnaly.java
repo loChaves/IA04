@@ -2,21 +2,18 @@ import java.util.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.SequentialBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
 public class AgentAnaly extends Agent{
+	private static final long serialVersionUID = 1L;
 	ObjectMapper mapper = new ObjectMapper();
 	Message msg;
 	List<Cellule> cells = new ArrayList<Cellule>();
@@ -34,6 +31,7 @@ public class AgentAnaly extends Agent{
 	}
 	
 	private class BehaviourAnalyse extends CyclicBehaviour{
+		private static final long serialVersionUID = 1L;
 		
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
@@ -53,7 +51,7 @@ public class AgentAnaly extends Agent{
 				cells = msg.getList();
 				Collections.sort(cells);
 				for(Cellule c : cells) {
-					if(c.getPossibles().size() == 0) {
+					if(c.getValeur() != 0) {
 						Integer v = c.getValeur();
 						for(Cellule d : cells)
 							d.rmPossible(v);
@@ -91,6 +89,7 @@ public class AgentAnaly extends Agent{
 								e.printStackTrace();
 							}
 						}
+
 						
 						if(c.getPossibles().size() == 2) {
 							boolean deuxSeule = false;

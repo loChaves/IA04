@@ -21,7 +21,7 @@ public class MainBoot {
 			envi.start();
 			
 			AgentController analy;
-			for(int i = 0; i < 27; i++) {
+			for(int i = 0; i < 10; i++) {
 				analy = mc.createNewAgent("ANALYSE"+i, "AgentAnaly", null);
 				analy.start();
 			}

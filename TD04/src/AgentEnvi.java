@@ -1,23 +1,24 @@
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static java.util.stream.Collectors.toList;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
 public class AgentEnvi extends Agent{
+	private static final long serialVersionUID = 1L;
 	int compteur = 0;
 	ObjectMapper mapper = new ObjectMapper();
 	Message msg;
+	boolean fin = false;
 	Sudoku s = new Sudoku();
 	
 	protected void setup() {
@@ -25,7 +26,7 @@ public class AgentEnvi extends Agent{
 
 		addBehaviour(new BehaviourCompte());
 		
-		try(BufferedReader br = new BufferedReader(new FileReader("sudoku.txt"))) {
+		try(BufferedReader br = new BufferedReader(new FileReader("sudoku5"))) {
 		    String line = br.readLine();
 		    List<Integer> sud = new ArrayList<Integer>();
 		    
@@ -44,9 +45,9 @@ public class AgentEnvi extends Agent{
 		}
 	}
 	
-	private class BehaviourCompte extends CyclicBehaviour{		
+	private class BehaviourCompte extends SimpleBehaviour{
+		private static final long serialVersionUID = 1L;
 		public void action(){
-			
 			if(!s.isDone()) {
 				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 				ACLMessage message = receive(mt);
@@ -54,8 +55,8 @@ public class AgentEnvi extends Agent{
 				ACLMessage rqtEnvi = new ACLMessage(ACLMessage.REQUEST);
 				
 				if(message != null){
-					if(s.howDone() >= 77)
-						System.out.println(s.printSudoku() + System.lineSeparator());
+//					if(s.howDone() == 74)
+//						System.out.println(s.printSudoku() + System.lineSeparator());
 					//System.out.println(s.getCellule(40).getPossibles());
 					System.out.println(s.howDone() + "%");
 					try {
@@ -67,13 +68,13 @@ public class AgentEnvi extends Agent{
 						
 					rqtEnvi.addReceiver(new AID(msg.getObjet(), AID.ISLOCALNAME));
 					
-					int c = compteur%26;
+					int c = compteur%27;
 					if(c >= 0 && c <= 8){
 						msg = new Message("analyse", s.getLigne(c));
-					}else if(c >= 8 && c <= 16){
-						msg = new Message("analyse", s.getColonne(c-8));
-					}else if(c >= 17 && c <= 25){
-						msg = new Message("analyse", s.getCarre(c-17));
+					}else if(c >= 9 && c <= 17){
+						msg = new Message("analyse", s.getColonne(c-9));
+					}else if(c >= 18 && c <= 26){
+						msg = new Message("analyse", s.getCarre(c-18));
 					}else
 						msg = new Message();
 				    
@@ -99,15 +100,26 @@ public class AgentEnvi extends Agent{
 						e.printStackTrace();
 					}
 					
-					boolean changed = false;
 					for(Cellule c : msg.getList()) {
-						if(c.getPossibles().size() < s.getCellule(c.getPosition()).getPossibles().size())
-							changed = true;
-					}
-					
-					if(changed) {
-						for(Cellule c : msg.getList())
-							s.setCellule(c.getPosition(), c);
+						if(s.getCellule(c.getPosition()).getValeur() == 0){
+							Cellule newCell = new Cellule(c.getPosition());
+							if(c.getValeur() == 0){
+//								for(Integer i : c.getPossibles()){
+//									if(s.getCellule(c.getPosition()).getPossibles().contains(i))
+//										pos.add(i);
+//								}
+								List<Integer> pos = s.getCellule(c.getPosition()).getPossibles().stream().filter(s->c.getPossibles().contains(s)).collect(toList());
+								newCell.setPossibles(pos);
+							} else{
+								try {
+									newCell.setValeur(c.getValeur());
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+							s.setCellule(newCell.getPosition(), newCell);
+						}
 					}
 				}
 			} else {
@@ -117,8 +129,12 @@ public class AgentEnvi extends Agent{
 				infEnvi.setContent(s.printSudoku());
 				send(infEnvi);
 				
-				done();
+				fin = true;
 			}
+		}
+		
+		public boolean done(){
+			return fin;
 		}
 	}
 }
