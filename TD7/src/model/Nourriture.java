@@ -2,9 +2,20 @@ package model;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Nourriture {
-	private int quantite;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
+public class Nourriture implements Steppable {
+	private int quantite;
+	
+	public int x, y;
+	
+	@Override
+	public void step(SimState arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public Nourriture(){
 		quantite = Constants.MAX_FOOD;
 	}
@@ -21,4 +32,5 @@ public class Nourriture {
 	public boolean isLast(){
 		return quantite == 1;
 	}
+
 }

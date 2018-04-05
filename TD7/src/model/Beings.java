@@ -8,14 +8,16 @@ import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 
 public class Beings extends SimState {
-	public static int GRID_SIZE = 100; 
-	public static int NUM_A = 100; 
-	public static int NUM_B = 100; 
+	private int numInsects = Constants.NUM_INSECT;
+	
+	public static int GRID_SIZE = Constants.GRID_SIZE; 
 	public static int NB_DIRECTIONS = 8;
 	public SparseGrid2D yard = new SparseGrid2D(GRID_SIZE,GRID_SIZE);
+	
 	public Beings(long seed) {
 		super(seed);
 	}
+	
 	public void start() {
 		System.out.println("Simulation started");
 		super.start();
@@ -27,14 +29,17 @@ public class Beings extends SimState {
 	private void addNourriture() {
 		for(int i = 0; i < Constants.NUM_FOOD_CELL; i++){
 			Int2D location = getFreeLocation();
-			
-			yard.setObjectLocation(new Nourriture(), location);
+			Nourriture nour = new Nourriture();
+			yard.setObjectLocation(nour, location.x, location.y);
+			nour.x = location.x;
+			nour.y = location.y;
+			schedule.scheduleRepeating(nour);
 		}
 	}
 	
 	private void addAgentsA() {
-		for(int  i  =  0;  i  <  NUM_A;  i++) {
-			TypeA  a  =  new  TypeA();
+		for(int  i  =  0;  i  <  numInsects;  i++) {
+			TypeA a =  new TypeA();
 			Int2D location = getFreeLocation();
 			yard.setObjectLocation(a,location.x,location.y);
 			a.x = location.x;
@@ -43,16 +48,7 @@ public class Beings extends SimState {
 			a.stoppable = stoppable;
 		}  
 	}
-//	private void addAgentsB() {  
-//		for(int  i  =  0;  i  <  NUM_B;  i++) {
-//			TypeB  b  =  new  TypeB();
-//			Int2D location = getFreeLocation();
-//			yard.setObjectLocation(b,location.x,location.y);
-//			b.x = location.x;
-//			b.y = location.y;
-//			schedule.scheduleRepeating(b);
-//		}  
-//	}
+
 	public boolean free(int x,int y) {
 		//	 int xx = yard.stx(x);
 		//	 int yy = yard.sty(y);
@@ -60,14 +56,16 @@ public class Beings extends SimState {
 		return true;
 	}
 	private Int2D getFreeLocation() {
-		Int2D location = new Int2D(random.nextInt(yard.getWidth()),
-				random.nextInt(yard.getHeight()) );
-		//	  Object ag;
-		//	  while ((ag = yard.get(location.x,location.y)) != null) {
-		//	   	  location = new Int2D(random.nextInt(yard.getWidth()),
-		//	   	           random.nextInt(yard.getHeight()) );
-		//	  }
+		Int2D location = new Int2D(random.nextInt(GRID_SIZE),
+				random.nextInt(GRID_SIZE) );
 		return location;
 	}
-	public  int  getNumStudents()  {  return  NUM_A;  }
+	
+	public int getNumStudents() { 
+		return numInsects; 
+	}
+
+	public void setNumInsects(int numInsects) {
+		this.numInsects = numInsects;
+	}
 }

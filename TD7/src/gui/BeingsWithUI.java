@@ -24,7 +24,8 @@ import model.TypeA;
 import model.TypeB;
 
 public class BeingsWithUI extends GUIState {
-	public static int FRAME_SIZE = 900;
+	
+	public static int FRAME_SIZE = 600;
 	public Display2D display;
 	public JFrame displayFrame;
 	SparseGridPortrayal2D yardPortrayal = new SparseGridPortrayal2D();
@@ -49,10 +50,9 @@ public class BeingsWithUI extends GUIState {
 	  yardPortrayal.setField(beings.yard);
 	  yardPortrayal.setPortrayalForClass(Nourriture.class, getNourriturePortrayal());
 	  yardPortrayal.setPortrayalForClass(TypeA.class, getTypeAPortrayal());
-	  //yardPortrayal.setPortrayalForClass(TypeB.class, new StrangeOvalPortrayal());
 	  display.reset();
 	  display.setBackdrop(Color.orange);
-		// redraw the display
+	  // redraw the display
 	  //addBackgroundImage();
 	  display.repaint();
 	}
@@ -66,14 +66,15 @@ public class BeingsWithUI extends GUIState {
 		OvalPortrayal2D r = new OvalPortrayal2D();
 		r.paint = Color.RED;
 		r.filled = true;
+		r.scale = 0.4; // Pour observer les superpositions de insectes et nourritures
 		return r;
 	}
-	private OvalPortrayal2D getTypeBPortrayal() {
+/*	private OvalPortrayal2D getTypeBPortrayal() {
 		OvalPortrayal2D r = new OvalPortrayal2D();
 		r.paint = Color.BLUE;
 		r.filled = true;
 		return r;
-	}
+	}*/
 	public void init(Controller c) {
 		  super.init(c);
 		  display = new Display2D(FRAME_SIZE,FRAME_SIZE,this);
@@ -94,8 +95,10 @@ public class BeingsWithUI extends GUIState {
 	  g.dispose();
 	  display.setBackdrop(new TexturePaint(b, new Rectangle(0,0,w,h)));
 	}
-	public  Object  getSimulationInspectedObject()  {  return  state;  }
-	public  Inspector  getInspector() {
+	
+	public Object getSimulationInspectedObject() { return state; }
+	
+	public Inspector getInspector() {
 	Inspector  i  =  super.getInspector();
 	  i.setVolatile(true);
 	  return  i;

@@ -1,5 +1,5 @@
 package model;
 
-public class TypeB extends AgentType {
+public class TypeB extends Insects {
 
 }
