@@ -55,6 +55,7 @@ public class Beings extends SimState {
 		//	 return yard.get(xx,yy) == null;
 		return true;
 	}
+	
 	private Int2D getFreeLocation() {
 		Int2D location = new Int2D(random.nextInt(GRID_SIZE),
 				random.nextInt(GRID_SIZE) );

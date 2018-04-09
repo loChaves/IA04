@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import sim.engine.SimState;
@@ -29,6 +31,7 @@ public class Insects implements Steppable {
 	@Override
 	public void step(SimState state) {
 		Beings beings = (Beings) state;
+		List<Nourriture> listNour;
 		kill(beings);
 		move(beings);
 	}
@@ -43,14 +46,58 @@ public class Insects implements Steppable {
 			return false;
 	}
 	
-	public boolean see(Beings beings) {
-		//Object champVue[][] = new Object[2*perception+1][2*perception+1];
-		return true;
+	public List<Nourriture> see(Beings beings) {
+		List<Nourriture> listNour = new ArrayList<>();
+		for(int i = x - DISTANCE_DEPLACEMENT; i <= x + DISTANCE_DEPLACEMENT; i++) {
+			for(int j = y - DISTANCE_DEPLACEMENT; j <= y + DISTANCE_DEPLACEMENT; j++) {
+				Bag bag = beings.yard.getObjectsAtLocation(i, j);
+				if(!bag.isEmpty()) {
+					for(Object ob : bag) {
+						if(ob.getClass() == Nourriture.class)
+							listNour.add((Nourriture) ob);
+					}
+				}
+			}
+		}
+		
+		return listNour;
+	}
+	
+	private boolean eat(List<Nourriture> listNour) {
+		if(this.energie + Constants.FOOD_ENERGY < Constants.MAX_ENERGY) {
+			// La charge de nourriture non null et les cases adjacentes sont nulles
+			if(charge > 0 && listNour.isEmpty()) {// Manger sa propre charge
+				charge --;
+				energie += Constants.FOOD_ENERGY;
+				return true;
+			}else if(!listNour.isEmpty()) {// Manger sur la case adjacente de nourriture
+				for(Nourriture nour : listNour) {
+					if(distance(nour.x, nour.y) == 1 && nour.isExist()) {
+						nour.takeFood();
+						energie += Constants.FOOD_ENERGY;
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean charger() {
+		//if()
+		return false;
 	}
 	
 	public boolean move(Beings beings) {
 		
 		energie--;
 		return true;
+	}
+	
+	public int distance(int x_a_calcul, int y_a_calcul) {
+		int dis_x = Math.abs(x_a_calcul - this.x);
+		int dis_y = Math.abs(y_a_calcul - this.y);
+		int dis = Math.max(dis_x, dis_y);
+		return dis;
 	}
 }

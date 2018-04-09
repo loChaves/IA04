@@ -32,5 +32,11 @@ public class Nourriture implements Steppable {
 	public boolean isLast(){
 		return quantite == 1;
 	}
+	
+	public boolean isExist() {
+		if(this.quantite > 0)
+			return true;
+		return false;
+	}
 
 }

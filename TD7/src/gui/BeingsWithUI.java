@@ -51,7 +51,7 @@ public class BeingsWithUI extends GUIState {
 	  yardPortrayal.setPortrayalForClass(Nourriture.class, getNourriturePortrayal());
 	  yardPortrayal.setPortrayalForClass(TypeA.class, getTypeAPortrayal());
 	  display.reset();
-	  display.setBackdrop(Color.orange);
+	  display.setBackdrop(Color.darkGray);
 	  // redraw the display
 	  //addBackgroundImage();
 	  display.repaint();
@@ -64,7 +64,7 @@ public class BeingsWithUI extends GUIState {
 	}
 	private OvalPortrayal2D getTypeAPortrayal() {
 		OvalPortrayal2D r = new OvalPortrayal2D();
-		r.paint = Color.RED;
+		r.paint = Color.ORANGE;
 		r.filled = true;
 		r.scale = 0.4; // Pour observer les superpositions de insectes et nourritures
 		return r;
