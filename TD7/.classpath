@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Chaves-001/Documents/GitHub/IA04/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Chaves-001/Documents/GitHub/IA04/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Chaves-001/Documents/GitHub/IA04/mason.19.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

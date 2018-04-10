@@ -1,20 +1,9 @@
 package model;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import sim.engine.SimState;
-import sim.engine.Steppable;
-
-public class Nourriture implements Steppable {
+public class Nourriture{
 	private int quantite;
 	
 	public int x, y;
-	
-	@Override
-	public void step(SimState arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public Nourriture(){
 		quantite = Constants.MAX_FOOD;
@@ -28,15 +17,4 @@ public class Nourriture implements Steppable {
 		if(quantite > 0)
 			quantite--;
 	}
-
-	public boolean isLast(){
-		return quantite == 1;
-	}
-	
-	public boolean isExist() {
-		if(this.quantite > 0)
-			return true;
-		return false;
-	}
-
 }
