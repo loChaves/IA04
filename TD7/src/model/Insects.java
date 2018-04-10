@@ -18,14 +18,15 @@ public class Insects implements Steppable {
 	public int energie = Constants.MAX_ENERGY;
 	public int DISTANCE_DEPLACEMENT;
 	public int DISTANCE_PERCEPTION;
-	public int CHARGE_MAX;
+	public int CHARGE_MAX = Constants.MAX_LOAD;
 	
 	public Insects() {
 		Random random = new Random();  
 		/* 10 = (1 + deplacement) + (1 + percevoir) + (1 + charge)*/
-		DISTANCE_DEPLACEMENT = random.nextInt(Constants.CAPACITY - 3);
-		DISTANCE_PERCEPTION =  random.nextInt(Constants.CAPACITY - DISTANCE_DEPLACEMENT - 3);
-		CHARGE_MAX = Constants.CAPACITY - DISTANCE_DEPLACEMENT - DISTANCE_PERCEPTION - 3;
+		//CHARGE_MAX = random.nextInt(Constants.MAX_LOAD);
+		DISTANCE_DEPLACEMENT = random.nextInt(Constants.CAPACITY - CHARGE_MAX - 3);
+		DISTANCE_PERCEPTION = Constants.CAPACITY - DISTANCE_DEPLACEMENT - CHARGE_MAX ;
+		
 	}
 	
 	@Override
@@ -72,7 +73,7 @@ public class Insects implements Steppable {
 				return true;
 			}else if(!listNour.isEmpty()) {// Manger sur la case adjacente de nourriture
 				for(Nourriture nour : listNour) {
-					if(distance(nour.x, nour.y) == 1 && nour.isExist()) {
+					if(distance(nour.x, nour.y) == 1) {
 						nour.takeFood();
 						energie += Constants.FOOD_ENERGY;
 						return true;
@@ -83,8 +84,18 @@ public class Insects implements Steppable {
 		return false;
 	}
 	
-	private boolean charger() {
-		//if()
+	private boolean charger(List<Nourriture> listNour) {
+		if(this.charge < this.CHARGE_MAX) {
+			if(!listNour.isEmpty()) {
+				for(Nourriture nour : listNour) {
+					if(distance(nour.x, nour.y) == 0) {// Insecte est dans la case ou nourriture se situe
+						charge ++;
+						nour.takeFood();
+						return true;
+					}
+				}
+			}
+		}
 		return false;
 	}
 	
