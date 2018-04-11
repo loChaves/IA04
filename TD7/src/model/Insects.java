@@ -24,7 +24,6 @@ public class Insects implements Steppable {
 	public Insects() {
 		Random random = new Random();  
 		/* 10 = (1 + deplacement) + (1 + percevoir) + (1 + charge)*/
-		//CHARGE_MAX = random.nextInt(Constants.MAX_LOAD);
 		DISTANCE_DEPLACEMENT = random.nextInt(Constants.CAPACITY - CHARGE_MAX - 3);
 		DISTANCE_PERCEPTION = Constants.CAPACITY - DISTANCE_DEPLACEMENT - CHARGE_MAX ;
 		
@@ -117,32 +116,68 @@ public class Insects implements Steppable {
 	}
 	
 	public boolean move(Beings beings, List<Nourriture> listNour) {
-		/*x += beings.random.nextInt(DISTANCE_DEPLACEMENT*2 + 1) - DISTANCE_DEPLACEMENT;
-		if(x > Constants.GRID_SIZE)
-			x = Constants.GRID_SIZE;
-		else if(x < 0)
-			x = 0;
-		y += beings.random.nextInt(DISTANCE_DEPLACEMENT*2 + 1) - DISTANCE_DEPLACEMENT;
-		if(y > Constants.GRID_SIZE)
-			y = Constants.GRID_SIZE;
-		else if(y < 0)
-			y = 0;*/
-		//beings.yard.setObjectLocation(this, x, y);
-		
 		boolean isMove = false;
-		
+		int dis = 100;
+		Nourriture nour_proche = new Nourriture();
+
+		if(!listNour.isEmpty()) { // se deplacer a la nourriture la plus proche
+			for(Nourriture nour : listNour) {
+				if(distance(nour.x,nour.y) < dis) {
+					dis = distance(nour.x, nour.y);
+					nour_proche = nour;
+				}
+			}
+			if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x + 1 <= Constants.GRID_SIZE) {
+				this.x = nour_proche.x + 1;
+				this.y = nour_proche.y;
+			/*	for(Nourriture nour : listNour) {
+					while(distance(nour.x, nour.y) == 0 && nour.x + 1 <= Constants.GRID_SIZE) {
+						this.x += 1;
+					}
+				}*/
+				beings.yard.setObjectLocation(this, x, y);
+				isMove = true;
+				energie--;
+				return isMove;
+			}else if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x - 1 > 0) {
+				this.x = nour_proche.x - 1;
+				this.y = nour_proche.y;
+			/*	for(Nourriture nour : listNour) {
+					while(distance(nour.x, nour.y) == 0 && nour.x - 1 > 0) {
+						this.x -= 1;
+					}
+				}*/
+				beings.yard.setObjectLocation(this, x, y);
+				isMove = true;
+				energie--;
+				return isMove;
+			}
+			
+		}
 		
 		if(!isMove) {// se deplacer aleatoire
 			// Supposon qu'il se deplace le plus loin qu'il peut
-			int sign = (int)(Math.random()*3);
+			int sign_x = (int)(Math.random()*3);
+			int sign_y = (int)(Math.random()*3);
 			int competence = DISTANCE_DEPLACEMENT*2 + 1;
 			int size = (int)Math.pow(competence, 2);
-			int dx = size%competence + (int)Math.pow(-1, sign)*DISTANCE_DEPLACEMENT;
-			int dy = size%competence + (int)Math.pow(-1, sign)*DISTANCE_DEPLACEMENT;
-			this.x = x + dx;
-			this.y = y + dy;
+			int dx = size%competence + (int)Math.pow(-1, sign_x)*DISTANCE_DEPLACEMENT;
+			int dy = size%competence + (int)Math.pow(-1, sign_y)*DISTANCE_DEPLACEMENT;
+			if(this.x + dx <= Constants.GRID_SIZE && this.x + dx >= 0 
+					&& this.y + dy <= Constants.GRID_SIZE && this.y + dy >= 0) {
+				this.x += dx;
+				this.y += dy;
+			}else if(this.x + dx < 0 && this.y + dy <= Constants.GRID_SIZE && this.y + dy >= 0
+					|| this.x + dx >= Constants.GRID_SIZE && this.y + dy <= Constants.GRID_SIZE && this.y + dy >= 0) {
+				this.y += dy;
+			}else if(this.y + dy < 0 && this.x + dx <= Constants.GRID_SIZE && this.x + dx >= 0
+					|| this.x + dy >= Constants.GRID_SIZE && this.x + dx <= Constants.GRID_SIZE && this.x + dx >= 0) {
+				this.x += dx;
+			}
 			beings.yard.setObjectLocation(this, x, y);
 			isMove = true;
+			energie--;
+			return isMove;
 		}
 		System.out.println("energie : " + energie);
 		energie--;
