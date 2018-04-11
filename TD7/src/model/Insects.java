@@ -33,12 +33,14 @@ public class Insects implements Steppable {
 	@Override
 	public void step(SimState state) {
 		Beings beings = (Beings) state;
-		updateNourriture(beings);
+		//updateNourriture(beings);
 		kill(beings);
+		if(kill(beings))
+			beings.killInsecte();
 		List<Nourriture> nour = see(beings);
 		charger(nour);
 		eat(nour);
-		move(beings);
+		move(beings, nour);
 	}
 
 	public boolean updateNourriture(Beings beings) {
@@ -114,8 +116,8 @@ public class Insects implements Steppable {
 		return false;
 	}
 	
-	public boolean move(Beings beings) {
-		x += beings.random.nextInt(DISTANCE_DEPLACEMENT*2 + 1) - DISTANCE_DEPLACEMENT;
+	public boolean move(Beings beings, List<Nourriture> listNour) {
+		/*x += beings.random.nextInt(DISTANCE_DEPLACEMENT*2 + 1) - DISTANCE_DEPLACEMENT;
 		if(x > Constants.GRID_SIZE)
 			x = Constants.GRID_SIZE;
 		else if(x < 0)
@@ -124,13 +126,29 @@ public class Insects implements Steppable {
 		if(y > Constants.GRID_SIZE)
 			y = Constants.GRID_SIZE;
 		else if(y < 0)
-			y = 0;
+			y = 0;*/
+		//beings.yard.setObjectLocation(this, x, y);
 		
-		beings.yard.setObjectLocation(this, x, y);
+		boolean isMove = false;
 		
+		
+		if(!isMove) {// se deplacer aleatoire
+			// Supposon qu'il se deplace le plus loin qu'il peut
+			int sign = (int)(Math.random()*3);
+			int competence = DISTANCE_DEPLACEMENT*2 + 1;
+			int size = (int)Math.pow(competence, 2);
+			int dx = size%competence + (int)Math.pow(-1, sign)*DISTANCE_DEPLACEMENT;
+			int dy = size%competence + (int)Math.pow(-1, sign)*DISTANCE_DEPLACEMENT;
+			this.x = x + dx;
+			this.y = y + dy;
+			beings.yard.setObjectLocation(this, x, y);
+			isMove = true;
+		}
+		System.out.println("energie : " + energie);
 		energie--;
-		return true;
+		return isMove;
 	}
+	
 	
 	public int distance(int x_a_calcul, int y_a_calcul) {
 		int dis_x = Math.abs(x_a_calcul - x);

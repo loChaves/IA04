@@ -9,7 +9,7 @@ import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 
 public class Beings extends SimState {
-	private int numInsects = Constants.NUM_INSECT;
+	private int numInsects;
 	public List<Nourriture> listNour = new ArrayList<>();
 
 	public static int NB_DIRECTIONS = 8;
@@ -18,6 +18,7 @@ public class Beings extends SimState {
 	public Beings(long seed) {
 		super(seed);
 		yard.removeEmptyBags = true;
+		numInsects = Constants.NUM_INSECT;
 	}
 	
 	public void start() {
@@ -53,7 +54,7 @@ public class Beings extends SimState {
 	}
 	
 	private void addAgentsA() {
-		for(int i = 0; i < numInsects; i++) {
+		for(int i = 0; i < Constants.NUM_INSECT; i++) {
 			TypeA a =  new TypeA();
 			Int2D location = getFreeLocation();
 			yard.setObjectLocation(a, location);
@@ -62,6 +63,11 @@ public class Beings extends SimState {
 			Stoppable stoppable = schedule.scheduleRepeating(a);
 			a.stoppable = stoppable;
 		}  
+	}
+	
+	public void killInsecte() {
+		if(numInsects > 0)
+			numInsects --;
 	}
 
 	public boolean free(int x, int y) {
