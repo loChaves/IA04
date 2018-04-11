@@ -10,7 +10,6 @@ import sim.util.Int2D;
 
 public class Beings extends SimState {
 	private int numInsects;
-	public List<Nourriture> listNour = new ArrayList<>();
 
 	public static int NB_DIRECTIONS = 8;
 	public SparseGrid2D yard = new SparseGrid2D(Constants.GRID_SIZE, Constants.GRID_SIZE);
@@ -18,12 +17,12 @@ public class Beings extends SimState {
 	public Beings(long seed) {
 		super(seed);
 		yard.removeEmptyBags = true;
-		numInsects = Constants.NUM_INSECT;
 	}
 	
 	public void start() {
 		System.out.println("Simulation started");
 		super.start();
+		numInsects = Constants.NUM_INSECT;
 		yard.clear();
 		createAllNourriture();
 		addAgentsA();
@@ -37,20 +36,20 @@ public class Beings extends SimState {
 			nour.x = location.x;
 			nour.y = location.y;
 			
-			listNour.add(nour);
+			Stoppable stoppable = schedule.scheduleRepeating(nour);
+			nour.stoppable = stoppable;
 		}
 	}
 	
-	private void addNourriture() {
-		if(listNour.size() < Constants.NUM_FOOD_CELL) {
-			Int2D location = getFreeLocation();
-			Nourriture nour = new Nourriture();
-			yard.setObjectLocation(nour, location);
-			nour.x = location.x;
-			nour.y = location.y;
+	public void addNourriture() {
+		Int2D location = getFreeLocation();
+		Nourriture nour = new Nourriture();
+		yard.setObjectLocation(nour, location);
+		nour.x = location.x;
+		nour.y = location.y;
 
-			listNour.add(nour);
-		}
+		Stoppable stoppable = schedule.scheduleRepeating(nour);
+		nour.stoppable = stoppable;
 	}
 	
 	private void addAgentsA() {

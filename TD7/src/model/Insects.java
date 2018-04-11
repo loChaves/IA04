@@ -3,13 +3,11 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.engine.Stoppable;
 import sim.util.Bag;
-import sim.util.Int2D;
 
 public class Insects implements Steppable {
 	
@@ -40,29 +38,20 @@ public class Insects implements Steppable {
 			System.out.println(this + " vient de mourrir.");
 		}else if(energie > 0){
 			List<Nourriture> nour = see(beings);
-			charger(nour);
-			eat(nour);
-			move(beings, nour);
+			if(!charger(nour)){
+				if(!eat(nour)){
+					if(!nour.isEmpty()) {
+						for(Nourriture n : nour) {
+							if(distance(n.x, n.y) == 0) {
+								move2();
+							} else
+								move(beings, nour);
+						}
+					} else
+						move(beings, nour);
+				}
+			}
 		}
-	}
-
-	public boolean updateNourriture(Beings beings) {
-		return beings.listNour.removeAll(beings.listNour.stream().filter(n -> n.getQuantite() == 0).collect(Collectors.toList()));
-//		for(Nourriture n : beings.listNour) {
-//			if(n.getQuantite() == 0)
-//				beings.listNour.remove(n);
-//		}
-	}
-	
-	public boolean kill(Beings beings) {
-		if(energie == 0){
-			beings.yard.remove(this);
-			stoppable.stop();
-			System.out.println(this + " vient de mourrir.");
-			return true;
-		}
-		else
-			return false;
 	}
 	
 	public List<Nourriture> see(Beings beings) {
@@ -85,7 +74,7 @@ public class Insects implements Steppable {
 		if(energie + Constants.FOOD_ENERGY < Constants.MAX_ENERGY) {
 			// La charge de nourriture non null et les cases adjacentes sont nulles
 			if(charge > 0 && listNour.isEmpty()) {// Manger sa propre charge
-				charge --;
+				charge--;
 				energie += Constants.FOOD_ENERGY;
 				System.out.println(this + " vient de manger de sa propre nourriture.");
 				return true;
@@ -107,7 +96,7 @@ public class Insects implements Steppable {
 		if(charge < CHARGE_MAX) {
 			if(!listNour.isEmpty()) {
 				for(Nourriture nour : listNour) {
-					if(distance(nour.x, nour.y) == 0) {// Insecte est dans la case ou nourriture se situe
+					if(distance(nour.x, nour.y) <= 1) {// Insecte est dans la case ou nourriture se situe
 						charge++;
 						nour.takeFood();
 						System.out.println(this + " vient de se charger de nourriture.");
@@ -121,42 +110,32 @@ public class Insects implements Steppable {
 	
 	public boolean move(Beings beings, List<Nourriture> listNour) {
 		boolean isMove = false;
-		int dis = 100;
+		int dis = 1000;
 		Nourriture nour_proche = new Nourriture();
 
 		if(!listNour.isEmpty()) { // se deplacer a la nourriture la plus proche
 			for(Nourriture nour : listNour) {
-				if(distance(nour.x,nour.y) < dis) {
+				if(distance(nour.x, nour.y) < dis) {
 					dis = distance(nour.x, nour.y);
 					nour_proche = nour;
 				}
 			}
+			
 			if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x + 1 < Constants.GRID_SIZE) {
 				this.x = nour_proche.x + 1;
 				this.y = nour_proche.y;
-				for(Nourriture nour : listNour) {
-					while(distance(nour.x, nour.y) == 0 && nour.x + 1 < Constants.GRID_SIZE) {
-						this.x += 1;
-					}
-				}
 				beings.yard.setObjectLocation(this, x, y);
 				isMove = true;
 				energie--;
 				return isMove;
-			}else if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x - 1 > 0) {
+			}else if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x - 1 >= 0) {
 				this.x = nour_proche.x - 1;
 				this.y = nour_proche.y;
-				for(Nourriture nour : listNour) {
-					while(distance(nour.x, nour.y) == 0 && nour.x - 1 > 0) {
-						this.x -= 1;
-					}
-				}
 				beings.yard.setObjectLocation(this, x, y);
 				isMove = true;
 				energie--;
 				return isMove;
 			}
-			
 		}
 		
 		if(!isMove) {// se deplacer aleatoire
@@ -171,10 +150,10 @@ public class Insects implements Steppable {
 					&& this.y + dy < Constants.GRID_SIZE && this.y + dy >= 0) {
 				this.x += dx;
 				this.y += dy;
-			}else if(this.x + dx <= 0 && this.y + dy < Constants.GRID_SIZE && this.y + dy >= 0
+			}else if(this.x + dx < 0 && this.y + dy < Constants.GRID_SIZE && this.y + dy >= 0
 					|| this.x + dx > Constants.GRID_SIZE && this.y + dy < Constants.GRID_SIZE && this.y + dy >= 0) {
 				this.y += dy;
-			}else if(this.y + dy <= 0 && this.x + dx < Constants.GRID_SIZE && this.x + dx >= 0
+			}else if(this.y + dy < 0 && this.x + dx < Constants.GRID_SIZE && this.x + dx >= 0
 					|| this.x + dy > Constants.GRID_SIZE && this.x + dx < Constants.GRID_SIZE && this.x + dx >= 0) {
 				this.x += dx;
 			}
@@ -183,9 +162,17 @@ public class Insects implements Steppable {
 			energie--;
 			return isMove;
 		}
-		System.out.println("energie : " + energie);
+		return false;
+	}
+	
+	public boolean move2(){
+		if(x == Constants.GRID_SIZE-1)
+			x -= 1;
+		else
+			x += 1;
+		
 		energie--;
-		return isMove;
+		return true;
 	}
 	
 	
