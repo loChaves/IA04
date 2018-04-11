@@ -33,13 +33,17 @@ public class Insects implements Steppable {
 	public void step(SimState state) {
 		Beings beings = (Beings) state;
 		//updateNourriture(beings);
-		kill(beings);
-		if(kill(beings))
+		if(energie == 0) {
+			beings.yard.remove(this);
+			stoppable.stop();
 			beings.killInsecte();
-		List<Nourriture> nour = see(beings);
-		charger(nour);
-		eat(nour);
-		move(beings, nour);
+			System.out.println(this + " vient de mourrir.");
+		}else if(energie > 0){
+			List<Nourriture> nour = see(beings);
+			charger(nour);
+			eat(nour);
+			move(beings, nour);
+		}
 	}
 
 	public boolean updateNourriture(Beings beings) {
@@ -127,14 +131,14 @@ public class Insects implements Steppable {
 					nour_proche = nour;
 				}
 			}
-			if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x + 1 <= Constants.GRID_SIZE) {
+			if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x + 1 < Constants.GRID_SIZE) {
 				this.x = nour_proche.x + 1;
 				this.y = nour_proche.y;
-			/*	for(Nourriture nour : listNour) {
-					while(distance(nour.x, nour.y) == 0 && nour.x + 1 <= Constants.GRID_SIZE) {
+				for(Nourriture nour : listNour) {
+					while(distance(nour.x, nour.y) == 0 && nour.x + 1 < Constants.GRID_SIZE) {
 						this.x += 1;
 					}
-				}*/
+				}
 				beings.yard.setObjectLocation(this, x, y);
 				isMove = true;
 				energie--;
@@ -142,11 +146,11 @@ public class Insects implements Steppable {
 			}else if(dis <= DISTANCE_DEPLACEMENT && nour_proche.x - 1 > 0) {
 				this.x = nour_proche.x - 1;
 				this.y = nour_proche.y;
-			/*	for(Nourriture nour : listNour) {
+				for(Nourriture nour : listNour) {
 					while(distance(nour.x, nour.y) == 0 && nour.x - 1 > 0) {
 						this.x -= 1;
 					}
-				}*/
+				}
 				beings.yard.setObjectLocation(this, x, y);
 				isMove = true;
 				energie--;
@@ -163,15 +167,15 @@ public class Insects implements Steppable {
 			int size = (int)Math.pow(competence, 2);
 			int dx = size%competence + (int)Math.pow(-1, sign_x)*DISTANCE_DEPLACEMENT;
 			int dy = size%competence + (int)Math.pow(-1, sign_y)*DISTANCE_DEPLACEMENT;
-			if(this.x + dx <= Constants.GRID_SIZE && this.x + dx >= 0 
-					&& this.y + dy <= Constants.GRID_SIZE && this.y + dy >= 0) {
+			if(this.x + dx < Constants.GRID_SIZE && this.x + dx >= 0 
+					&& this.y + dy < Constants.GRID_SIZE && this.y + dy >= 0) {
 				this.x += dx;
 				this.y += dy;
-			}else if(this.x + dx < 0 && this.y + dy <= Constants.GRID_SIZE && this.y + dy >= 0
-					|| this.x + dx >= Constants.GRID_SIZE && this.y + dy <= Constants.GRID_SIZE && this.y + dy >= 0) {
+			}else if(this.x + dx <= 0 && this.y + dy < Constants.GRID_SIZE && this.y + dy >= 0
+					|| this.x + dx > Constants.GRID_SIZE && this.y + dy < Constants.GRID_SIZE && this.y + dy >= 0) {
 				this.y += dy;
-			}else if(this.y + dy < 0 && this.x + dx <= Constants.GRID_SIZE && this.x + dx >= 0
-					|| this.x + dy >= Constants.GRID_SIZE && this.x + dx <= Constants.GRID_SIZE && this.x + dx >= 0) {
+			}else if(this.y + dy <= 0 && this.x + dx < Constants.GRID_SIZE && this.x + dx >= 0
+					|| this.x + dy > Constants.GRID_SIZE && this.x + dx < Constants.GRID_SIZE && this.x + dx >= 0) {
 				this.x += dx;
 			}
 			beings.yard.setObjectLocation(this, x, y);
