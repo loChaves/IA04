@@ -17,11 +17,12 @@ public class Insects implements Steppable {
 	public int energie = Constants.MAX_ENERGY;
 	public int DISTANCE_DEPLACEMENT;
 	public int DISTANCE_PERCEPTION;
-	public int CHARGE_MAX = Constants.MAX_LOAD;
+	public int CHARGE_MAX;
 	
 	public Insects() {
 		Random random = new Random();  
 		/* 10 = (1 + deplacement) + (1 + percevoir) + (1 + charge)*/
+		CHARGE_MAX = Constants.MAX_LOAD - 4;
 		DISTANCE_DEPLACEMENT = random.nextInt(Constants.CAPACITY - CHARGE_MAX - 3);
 		DISTANCE_PERCEPTION = Constants.CAPACITY - DISTANCE_DEPLACEMENT - CHARGE_MAX ;
 		
